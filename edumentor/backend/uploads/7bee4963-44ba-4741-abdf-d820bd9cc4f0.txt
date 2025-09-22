@@ -1,0 +1,318 @@
+DATABASE
+-a db is a shared resource accessed by many users and processes concurrently
+-collection of named data items
+
+
+UNIT 3
+RELATIONAL DATA MODELS
+-a simple model in which db is represented as a collection of relations(tables)
+-based on the concept of relations
+-first proposed by Dr. E.F. Codd in 1970
+-After designing the conceptual model of db using ER Diagram, we convert the conceptual model into relational models, which can be implemented using any RDBMS Language, such as SQL, MySQL, etc.
+
+RDBMS (RELATIONAL DATABASE MANAGEMENT SYSTEM)
+-basis for SQL 
+-db mgmt. system based on relational model 
+
+- Relations -two dimensional table; rows(tuples) and columns(fields or attributes)
+	    -has unique name; set of tuples(rows) or a set of cols
+	    -is formed over the cartesian product of the sets
+  -degree: no of columns/ attributes 
+  -cardinality/state: no of rows/ tuples in a relation
+  -domain: all possible col values/ data type describing the types of values that appears in each col
+  -instance: actual data present in the table at a time
+  -relational schema(R): represents name of relation with its attributes (table definition)
+  -populated table: state of the relation
+  -R: schema of relation/ intension of a relation
+  -r of R: a specific value or population of R/ extension of a relation
+  -characteristics:
+	-tuples are not ordered but unique
+	-attributes and values in each tuple are ordered and must follow the domain always
+	-all values must be atomic (single-valued and not empty); null can be used to represent values that are unknown or inapplicable to certain tuples
+	-same type values in a col
+	-all rows must have same no of cols at all times
+
+-constraints: -rule or condition, or a real-life limitation on data stored in the db
+	      -must hold on to all valid relation instances
+	      -maintain validity, consistency and integrity of data
+	      -types: implicit(applied in data model), explicit(applied in schemas of the data model/schema based), semantic(application based) 
+ -implicit: -domain - value of each attribute must be an atomic value from the domain; specific data types(numeric, boolean, character)
+	    -key - key attribute value in each tuple must be unique(super, primary, unique)
+	    -integrity - used to ensure accuracy and consistency of data
+			-types: entity integrity: states that no pk value can be null
+				referential integrity: specified b/w two relations; ensures that fk values match pk values in the related table or are NULL
+	    - null - used for no value or unknown 
+*PK(primary key): that col of the table on which all other cols are fully functionally dependent.
+*composite key: combination of cols to form a pk
+
+CODD'S RULES(13): Dr. E.F. Codd
+rule 0: foundation rule: an rdbms must be able to manage db entirely through its relational capabilities
+rule 1: information rule: all info in rdb is represented (in only one way)at logical level and by values in tables
+rule 2: guaranteed access rule: all data in rdb is guaranteed to be logically accessible by table name, primary key value, col name
+rule 3: systematic treatment of null values: null values are supported in fully relational dbms for showing missing info in a systematic way 
+rule 4: dynamic online catalogue based on the relational model: db description is represented at logical level in same way as ordinary data
+rule 5: comprehensive data sublanguage rule: relational db must have at least one comprehensive data sublanguage for defining, manipulating, and controlling data
+rule 6: view updating rule: all views that are theoretically updateable are also updateable by the system
+rule 7: possible for higher-level insert, update, and delete: system is able to insert, update and delete operations fully; can also perform on multiple rows simultaneously 
+rule 8: physical data independence: 
+rule 9: logical data independence:
+rule 10: integrity independence: constraints specific to a relational db must be definable in the relational data sublanguage and storable in the catalogue
+rule 11: distribution independence: 
+rule 12: non-subversion rule: if relational system supports low-level lang, the lang can't be used to subvert or bypass integrity rules expressed in a higher-level relational lang.
+
+RELATIONAL ALGEBRA
+-basic set of operations for relational model
+-it is a procedural query language which consists of a set of operations that take one or two relations as input and produce a new relation as their result
+-an algebra whose operands are relations or variables that represent relations
+-union, intersection, difference, selection(picking certain rows), projection(picking certain cols), products & join(composition of relations), renaming of relations and attributes
+-basic/ unary relational operations: applied to a single table
+	-select (sigma - σ)
+	-project (pi - π)
+	-rename (rho - ρ)
+-relational algebra operations from set theory:
+	-union (U), intersection (∩), difference (–)
+	-cartesian product (x)
+-binary relational operations: 
+	-join (theta - θ, ⋈, natural join - *) (inner, outer, left, right, full (outer))
+	-division (÷)
+
+DATABASE NORMALISATION
+-to remove redundant and inconsistent data
+-process of decomposing given relation schema into a set of relational schemas based on their FD and pk to achieve desirable properties of: 
+  -minimizing data redundancy
+  -minimizing anomalies
+  -reduces memory usage
+-types of anomalies: update - changes in one place require updates in multiple rows
+		     insertion - difficulty in adding new data due to missing other data
+		     deletion - deleting data unintentionally removes other imp data
+- functional dependency(FD): constraint/ rule b/w two sets of attributes from db
+  -att Y of relation is functionally dependent on att X(X->Y), iff for each value of X, no more than one value of Y is associated
+  -X is determinant; Y is dependent
+  -types: trivial - in X->Y, if y is subset of x (Y ⊆ X)
+	  non-trivial - in X->Y, where y is not a subset of x
+	  fully  - in X->Y, if y is fully functionally dependent on x
+	  partial - in X->Y, if (x+z) is a primary composite key, and y is not determined by (x+z) but only by x
+	  transitive - in X->Y, if set of att. Z such that, if x->z and z->y fd holds, then y is transitively dependent on x via z
+  -armstrong's inference rules: 
+	R1: reflexivity rule - if x is a set of att. and Y ⊆ X, then x->y holds
+	R2: augmentation rule - if x->y holds and z is a set of att., then xz->yz
+	R3: transitivity rule - if x->y and y->z, then x->z holds
+	R4: union or additive rule - if x->z and x->y, then x->yz holds
+	R5: decomposition or projective rule - if x->yz holds, then x->y and x->z holds
+	R6: pseudo-transitivity rule - if x->y holds and wy->z holds, then wx->z holds
+
+- closure of set of attribute(x), i.e. X+: useful in finding super/ candidate key of a given relation with its fd 
+
+- normal forms:
+ -used to ensure that various types of anomalies and inconsistencies are not introduced into the db 
+ -for determining whether particular relation is in normal form or not, the fd b/w attributes in the relation are examined
+
+1st NF: every field in the table must have atomic values (one value only rather than multiple values/composite and multi-valued attributes are not allowed)
+2nd NF: -db must be in 1st nf
+        -there must be a col on which all other cols are fully functionally dependent, i.e. there must be a primary key in all tables
+	-no partial dependency
+*table that can't have pk, are known as weak entity set
+3rd NF: -db must be in 2nd nf
+	-there must not be transitive dependency(x->y; y->z, thus x->z): solution is decomposition
+BCNF: -boyce codd normal form
+      -db must be in 3rd nf
+      -each determinant is a candidate key
+      -non-trivial functional dependency
+
+
+UNIT 4
+TRANSACTIONS
+-it is a sequence/set of one or more SQL operations used to perform a single logical unit of work
+-generally represent change in db
+-an executing program (process) that includes one or more db access operations
+-transaction support in sql - TCL commands or queries
+-terms:
+1. database - collection of named data items
+2. granularity - size of each data item 
+
+-operations:
+1. read item - (access db)reads a db item x into program variable 
+2. write item - (change db)writes value of program variable x into the db item named x
+(additional operations)
+3. commit - (saves all changes made during transaction)takes place when all other operations of transaction are completed
+4. rollback - (reverse previous transaction)takes place when any operations fails to perform before the whole transaction is committed
+*if any operation or transaction fails before committing, then it is rolled back
+*a failed transaction can't be resumed; it has to be restarted
+
+-ACID properties of transaction:
+1. atomicity - transaction is a single unit of processing, it is either performed in its entirety or not performed at all[either all or none]
+2. consistency preservation - db must remain in a consistent state both before and after the execution of transaction
+3. isolation - their final effect should be as if each transaction was executed in isolation from start to finish; diff transactions don't affect each other
+4. durability - once a transaction is committed, its changes applied to db must never be lost
+
+-types:
+1. read only - if db operations do not update the db, but only retrieve data
+2. read-write - if db operations perform both read and write operations on data 
+
+-states:
+ -begins in active state
+ -active: transaction goes into active state (from passive state) immediately after it starts execution; it executes read and write operations
+ -partially committed(in RAM): when all transactions end, it moves to partially committed state; only one operation is left, i.e. Commit 
+ -committed(in hard disk/ drive): after successful completion
+ -failed: goes into failed state if any failure occurs while execution; or if transaction is aborted during its active state
+ -aborted: kill transaction or restart(roll back): when transaction can't be resumed
+ -terminated: after transaction has been rolled back and db has been restored to its state prior to the start of transaction; all memory is deallocated from cpu, ram, registers, etc. to restore the previous state
+		PARTIALLY COMMITTED ------→ COMMITTED 
+		 ↗ 	|			   \
+        read/write      |			    \
+	 ↗  	        |			     ↘ 
+    ACTIVE	     failure 			   TERMINATED
+	  ↘ 		|			    ↗
+	    failure	|			   /
+	  	    ↘	↓			  /
+		     FAILED -----------------→ ABORT
+
+TRANSACTION FAILURE
+*when transaction is submitted for execution, system is responsible for:
+ -all operations are completed successfully and their effect is recorded permanently in db OR
+ -transaction has no effect on db or any other transaction
+
+-reasons for failure in middle of execution:
+ -computer failure (system crash): (power failure, OS crash)h/w or s/w error in sytem during execution; if h/w crashes, content of computer's internal memory may be lost
+ -transaction or system error: (logic error, constraint violation)operation in transaction may cause failure (eg. integer overflow, / by zero); logical programming error
+ -disk failure: (h/w crash or corruption)disks may lose data bcz of disk read/write head crash; may happen during read or write operation of transaction
+ -local errors or exception conditions detected by the transaction
+ -physical problems or catastrophes: problems both related and not related to technical issues but not affected by transactions (fire, theft, power failure, overwriting disks or tapes, etc)
+
+
+DATABASE SECURITY
+- types:
+  -legal and ethical issues regarding right to access info
+  -policy issues at governmental, institutional, or corporate level on what info should and shouldn't be made public
+  -system related issues: which security functions should be enforced at which system levels (physical, h/w, os, dbms levels)
+
+-database administrator(DBA) and security
+  -it is a technical expert responsible for managing, maintaining, securing, and tuning a db system to ensure its availability, performance, and reliability
+  -ensures that the db system runs securely, efficiently, and without interruptions
+  -roles: db design, data security, performance monitoring, user mgmt, documentation, etc.
+
+- authentication: the process of securely identifying its users by a system is called authentication; used to establish the identity of a user who is trying to use a system
+  -verifies who the user is/ confirms identity (username & password)
+  -done by testing unique piece of info that is known only by the user being authenticated and the authentication system (pswd, fingerprint, bio metrics, etc)
+
+- authorization: an authorization scheme determines whether an authenticated user should be able to perform a particular operation on a particular resource or just read it
+  -in a db, set of users are allowed to update/ modify the db, while some users can only read the data 
+  -controls what operations a user can perform (read, write, delete, etc)
+  -when user logs in -> authorization scheme determines whether user should be given ability to modify db or just the ability to read the data
+
+
+DATABASE BACKUP AND RECOVERY
+-restoring the database after failure
+- backup: periodic copy of database stored separately (daily, weekly, etc)
+  -copying and archiving data so it can be used to restore original after a data loss event
+  -purpose: -recover data after its lost from corruption or deletion
+	    -recover data from earlier time
+- recovery: restores the db using backup + transaction logs
+-recovery techniques are used to ensure db consistency and transaction atomicity and durability despite failures
+- approaches to recover db:
+  1. manual reprocessing: -db is periodically backed up and all transactions applied are recorded
+			  -in case of system crash: latest db save is restored; all transactions reapplied by user
+			  -disadv: time required; transaction might have other potential failures
+  2. automated recovery: -types: deferred update, immediate update, shadow paging
+			 -operations: undo(rollback but applies to a single operation rather than whole transaction); redo(certain operations are redone to ensure all operations of a committed transaction are successfully applied to the db)
+-system log: system maintains a log to keep track of all transactions that affect db items
+  -each transaction records: -start(t) - transaction t has started
+			     -write(t, x, old, new) - t has written to item x with new, old is also maintained
+			     -read(t, x) - t has read data item x
+			     -commit(t) - t committed / abort(t) - t was aborted
+- backup & recovery techniques:
+  -log-based recovery
+  -shadow paging
+  -checkpointing: save point in logs to speed up recovery
+  -immediate update: changes written to db immediately
+  -deferred update: changes written only after transaction commits
+
+1. deferred update: 
+  -called no-undo or redo technique
+  -simpler
+  -used to ensure atomicity and durability of transactions
+  -updates are not immediately applied to db, stored in log file and applied altogether after transaction commits
+  -if system crashes before commit -> no changes made to db -> no undo needed
+  -defers or postpone any updates to db until transaction commits
+  -steps: begin transaction -> write operations(but deffered, written to log) -> commit(log saved permanently) -> apply updates(changes written to db)
+  -adv: recovery is easier; only transactions that reach commit from log are written in db; in case of crash recovery->only redo is needed for committed transaction
+
+2. immediate update: 
+  -called undo or no-redo technique
+  -changes made are immediately reflected in db, even before transaction commits
+  -opp of deffered
+  -undo necessary when transaction fails
+  -redo not needed
+  -adv: allows higher concurrency bcz transactions write continuously to db directly
+
+3. shadow paging:
+  -technique for providing atomicity and durability to transaction control
+  -single-user env: doesn't require log
+  -multi-user env: log may be needed for concurrency control method
+  -makes recovery simple: just switch back to old directory if something goes wrong
+  -adv: maintaining transaction log file is eliminated; recovery is fast(since undo and redo not needed)
+  -disadv: copying entire page table is expensive; complex storage mgmt strategies
+  -steps: 
+ i. db divided into pages/blocks(collection of fixed-size page, each stored on disk) 
+			↓ 
+ ii. directory(tells which page on disk has what data)  
+			↓
+ iii. two directories during transaction: current(used during transaction to read/write data) and shadow(backup copy of directory before transaction starts)
+			↓
+ iv. at first, both directories are same(both point to same data pages)
+			↓
+ v. new page is created with updated data, current directory points to this new page; original page remains unchanged, still pointed by shadow directory
+			↓
+ vi. during transaction: only current directory used to access data; shadow directory untouched and stored safely
+			↓
+ vii. if transaction succeeds: current directory becomes official one; changes are now permanent; shadow directory points to new page
+			↓
+ viii. if transaction fails: discards current directory and goes back to shadow directory; no need for undo; original data is still safe
+
+
+
+QUERY LANGUAGES
+- QBE (Query By Example):
+ -both a data-manipulation lang and an early db system 
+ -developed at IBM's TJ Watson Research Center in early 1970s
+ -has two dimensional syntax: like tables (requires 2 dimensions for its expression)
+ -visual query language
+ -expressed 'by example': instead of procedure -> users fill out forms (tables)(or give examples) to specify what they want -> system generalizes example to compute answer to the query
+ -express queries by skeleton tables
+ -easier for non-programmers
+ -used in tools like microsoft access
+
+- NoSQL Databases:
+ -stands for 'not only SQL'
+ -nosql systems are distributed db or storage systems
+ -db that handles unstructured or semi-structured data and data storage
+ -applications using nosql: social media, marketing and sales, road maps, email, etc.
+ -diff storage applications developed:
+  1. BigTable - Google - column-based or wide column stores
+  2. DynamoDB - Amazon - key-value (key-tuple/key-object) data stores 
+  3. Cassandra - Facebook - uses concepts from both key-value stores and column-based systems
+  4. MongoDB, CouchDB - document stores
+  5. Neo4J, GraphBase - graph-based nosql systems
+  6. OrientDB - combines several concepts
+  7. Database systems classified on the object model or native xml model
+ -characteristics: -scalability
+		   -availability, replication, and eventual consistency
+		   -replication models: master-slave, master-master
+		   -sharding of files(process of dividing a large file or dataset into smaller)
+		   -high performance data access
+		   -schema not required: achieved by allowing semi-structured and self describing data
+		   -less powerful query languages required
+		   -versioning: some nosql systems provide storage of multiple versions of the data items, with the timestamp of when the data version was created
+ -adv:  -schema less
+	-scalable
+	-handles big data and distributed storage efficiently
+ -categories:
+  1. document-based nosql systems - systems store data in form of documents using well-known formats (JSON); accessible via their document id
+  2. nosql key-value stores - systems have simple data model based on fast access by key to value associated with key; value can be record or object or document
+  3. column-based or wide column nosql systems - systems partition table by columns, where each col family is stored in its own files; allow versioning of data
+  4. graph-based nosql systems - data represented as graphs 
+  5. hybrid nosql systems - systems have characteristics from 2 or more of above
+  6. object databases
+  7. xml databases
+
+
